@@ -1,0 +1,29 @@
+alias: Homecoming
+description: ""
+triggers:
+  - trigger: lock.opened
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: vacuum.is_cleaning
+            target:
+              device_id: [your_device_id_here]
+            options:
+              behavior: any
+          - condition: template
+            value_template: >-
+              {{ ((now().timestamp() -
+              (states('sensor.[your_device_name_here]_last_mission_start_time') |
+              as_timestamp)) / 60) > 15 }}
+        sequence:
+          - action: vacuum.return_to_base
+            metadata: {}
+            target:
+              device_id: [your_device_id_here]
+            data: {}
+mode: single

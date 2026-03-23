@@ -18,3 +18,6 @@ Send locate command when coming home if status is error or not cleaning or docke
 
 ## [Mission Cleaning Time](roomba/automations/mission_cleaning_time.yaml)
 Not available via the integration. Calculated with `timer.mission_timer` and `input_number.mission_clean_time`. Note that the time is only updated on pause/finished/error.
+
+## [Homecoming, return to dock](roomba/automations/homecoming.yaml)
+When coming home, return roomba to the dock.
