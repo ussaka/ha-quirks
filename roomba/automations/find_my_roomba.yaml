@@ -1,0 +1,40 @@
+alias: Find My Roomba
+description: ""
+triggers:
+  - trigger: lock.unlocked
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+conditions:
+  - condition: or
+    conditions:
+      - condition: vacuum.is_encountering_an_error
+        target:
+          device_id: [your_device_id_here]
+        options:
+          behavior: any
+      - condition: not
+        conditions:
+          - condition: vacuum.is_cleaning
+            target:
+              device_id: [your_device_id_here]
+            options:
+              behavior: any
+          - condition: vacuum.is_docked
+            target:
+              device_id: [your_device_id_here]
+            options:
+              behavior: any
+actions:
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - action: vacuum.locate
+    metadata: {}
+    target:
+      device_id: [your_device_id_here]
+    data: {}
+mode: single

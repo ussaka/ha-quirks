@@ -1,0 +1,80 @@
+alias: Mission cleaning time
+description: ""
+triggers:
+  - trigger: vacuum.started_cleaning
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+    id: start
+  - trigger: vacuum.paused_cleaning
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+    id: pause
+  - trigger: vacuum.started_returning
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+    id: stop
+  - trigger: vacuum.errored
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+    id: stop
+  - trigger: vacuum.docked
+    target:
+      device_id: [your_device_id_here]
+    options:
+      behavior: first
+    id: stop
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - start
+        sequence:
+          - action: timer.start
+            metadata: {}
+            data: {}
+            target:
+              entity_id: timer.mission_timer
+      - conditions:
+          - condition: trigger
+            id:
+              - pause
+        sequence:
+          - action: timer.pause
+            metadata: {}
+            data: {}
+            target:
+              entity_id: timer.mission_timer
+      - conditions:
+          - condition: trigger
+            id:
+              - stop
+        sequence:
+          - action: timer.pause
+            metadata: {}
+            data: {}
+            target:
+              entity_id: timer.mission_timer
+          - action: input_number.set_value
+            metadata: {}
+            data:
+              value: >
+                {{ (10800 - as_timedelta(state_attr('timer.mission_timer',
+                'remaining')).total_seconds()) / 60 }}
+            target:
+              entity_id: input_number.mission_clean_time
+          - action: timer.finish
+            metadata: {}
+            data: {}
+            target:
+              entity_id: timer.mission_timer
+mode: single
